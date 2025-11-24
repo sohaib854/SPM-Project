@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen 2 - Google Drive Share Guard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            overflow: hidden;
+        }
+        
+        /* Browser Chrome */
+        .browser-chrome {
+            background: #e8e8e8;
+            border-bottom: 1px solid #ccc;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .browser-dots {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .dot.red { background: #ff5f57; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #28ca42; }
+        
+        .url-bar {
+            flex: 1;
+            background: white;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 13px;
+            color: #333;
+        }
+        
+        /* Google Drive Interface */
+        .drive-wrapper {
+            height: calc(100vh - 45px);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .drive-header {
+            background: white;
+            border-bottom: 1px solid #dadce0;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .drive-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .drive-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 50%, #fbbc04 75%, #ea4335 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .logo-text {
+            font-size: 22px;
+            color: #5f6368;
+        }
+        
+        .search-bar {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 24px;
+            background: #f1f3f4;
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 14px;
+            border: none;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5f6368;
+        }
+        
+        .icon-btn:hover {
+            background: #f1f3f4;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .drive-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 240px;
+            background: white;
+            border-right: 1px solid #dadce0;
+            padding: 8px;
+        }
+        
+        .new-btn {
+            width: 100%;
+            background: white;
+            border: 1px solid #dadce0;
+            border-radius: 24px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #5f6368;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        
+        .new-btn:hover {
+            background: #f8f9fa;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            padding: 8px 16px;
+            border-radius: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: #5f6368;
+            margin-bottom: 2px;
+        }
+        
+        .nav-item:hover {
+            background: #f1f3f4;
+        }
+        
+        .nav-item.active {
+            background: #e8f0fe;
+            color: #1a73e8;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+        }
+        
+        .content-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+        
+        .content-title {
+            font-size: 22px;
+            font-weight: 400;
+            color: #202124;
+        }
+        
+        .view-options {
+            display: flex;
+            gap: 4px;
+        }
+        
+        .file-list {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #dadce0;
+        }
+        
+        .file-row {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f3f4;
+            cursor: pointer;
+        }
+        
+        .file-row:hover {
+            background: #f8f9fa;
+        }
+        
+        .file-row.selected {
+            background: #e8f0fe;
+        }
+        
+        .file-icon {
+            width: 32px;
+            height: 32px;
+            margin-right: 16px;
+            font-size: 24px;
+        }
+        
+        .file-name {
+            flex: 1;
+            font-size: 14px;
+            color: #202124;
+        }
+        
+        .file-owner {
+            width: 200px;
+            font-size: 13px;
+            color: #5f6368;
+        }
+        
+        .file-modified {
+            width: 150px;
+            font-size: 13px;
+            color: #5f6368;
+        }
+        
+        .file-size {
+            width: 100px;
+            text-align: right;
+            font-size: 13px;
+            color: #5f6368;
+        }
+        
+        /* Share Dialog */
+        .dialog-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .share-dialog {
+            background: white;
+            border-radius: 8px;
+            width: 560px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .dialog-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .dialog-title {
+            font-size: 22px;
+            font-weight: 400;
+            color: #202124;
+            margin-bottom: 8px;
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            color: #5f6368;
+        }
+        
+        .dialog-body {
+            padding: 24px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .access-section {
+            margin-bottom: 24px;
+        }
+        
+        .section-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #5f6368;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        
+        .access-option {
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+        }
+        
+        .access-option:hover {
+            border-color: #1a73e8;
+            background: #f8f9fa;
+        }
+        
+        .access-option.selected {
+            border: 2px solid #1a73e8;
+            background: #e8f0fe;
+        }
+        
+        .option-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 4px;
+        }
+        
+        .radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #5f6368;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .radio.checked {
+            border-color: #1a73e8;
+        }
+        
+        .radio.checked::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: #1a73e8;
+            border-radius: 50%;
+        }
+        
+        .option-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #202124;
+        }
+        
+        .option-description {
+            font-size: 13px;
+            color: #5f6368;
+            margin-left: 32px;
+        }
+        
+        /* Exposcope Guard Card */
+        .guard-card {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border: 2px solid #ef4444;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+        
+        .guard-header {
+            display: flex;
+            align-items: start;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .shield-warning {
+            width: 48px;
+            height: 48px;
+            background: #ef4444;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        
+        .guard-content {
+            flex: 1;
+        }
+        
+        .guard-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #991b1b;
+            margin-bottom: 6px;
+        }
+        
+        .guard-message {
+            font-size: 14px;
+            color: #7f1d1d;
+            line-height: 1.5;
+        }
+        
+        .findings-box {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .findings-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+        
+        .finding-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 0;
+            font-size: 13px;
+            color: #6b7280;
+        }
+        
+        .finding-icon {
+            width: 20px;
+            height: 20px;
+            background: #fee2e2;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .guard-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .guard-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .guard-btn-primary {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .guard-btn-primary:hover {
+            background: #dc2626;
+        }
+        
+        .guard-btn-secondary {
+            background: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+        
+        .guard-btn-secondary:hover {
+            background: #f9fafb;
+        }
+        
+        .why-link {
+            margin-top: 12px;
+            font-size: 13px;
+            color: #7f1d1d;
+            text-decoration: underline;
+            cursor: pointer;
+            display: inline-block;
+        }
+        
+        .dialog-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .copy-link-btn {
+            padding: 8px 24px;
+            background: white;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 14px;
+            color: #1a73e8;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .copy-link-btn:hover {
+            background: #f8f9fa;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .dialog-btn {
+            padding: 8px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .dialog-btn-cancel {
+            background: transparent;
+            color: #1a73e8;
+        }
+        
+        .dialog-btn-cancel:hover {
+            background: #f8f9fa;
+        }
+        
+        .dialog-btn-done {
+            background: #1a73e8;
+            color: white;
+        }
+        
+        .dialog-btn-done:hover {
+            background: #1557b0;
+        }
+        
+        .exposcope-footer {
+            padding: 12px 24px;
+            background: #f9fafb;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+        
+        .shield-icon {
+            width: 16px;
+            height: 16px;
+            color: #10a37f;
+        }
+        
+        .dialog-backdrop.hidden {
+            display: none;
+        }
+        
+        .guard-card.hidden {
+            display: none;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #5f6368;
+            transition: all 0.2s;
+        }
+        
+        .close-btn:hover {
+            background: #f1f3f4;
+        }
+        
+        .success-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #10a37f;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 2000;
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        .success-toast.hidden {
+            display: none;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateX(-50%) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Browser Chrome -->
+    <div class="browser-chrome">
+        <div class="browser-dots">
+            <div class="dot red"></div>
+            <div class="dot yellow"></div>
+            <div class="dot green"></div>
+        </div>
+        <div class="url-bar">https://drive.google.com/drive/my-drive</div>
+    </div>
+    
+    <!-- Google Drive Interface -->
+    <div class="drive-wrapper">
+        <div class="drive-header">
+            <div class="drive-logo">
+                <div class="logo-container">
+                    <div class="drive-icon">📁</div>
+                    <span class="logo-text">Drive</span>
+                </div>
+            </div>
+            <input type="text" class="search-bar" placeholder="Search in Drive">
+            <div class="header-actions">
+                <button class="icon-btn">⚙️</button>
+                <button class="icon-btn">❓</button>
+                <button class="icon-btn">⚙️</button>
+                <div class="user-avatar">M</div>
+            </div>
+        </div>
+        
+        <div class="drive-body">
+            <div class="sidebar">
+                <button class="new-btn">
+                    <span style="font-size: 20px;">+</span>
+                    <span>New</span>
+                </button>
+                <div class="nav-item active">
+                    <span>🏠</span>
+                    <span>My Drive</span>
+                </div>
+                <div class="nav-item">
+                    <span>💻</span>
+                    <span>Computers</span>
+                </div>
+                <div class="nav-item">
+                    <span>👥</span>
+                    <span>Shared with me</span>
+                </div>
+                <div class="nav-item">
+                    <span>⏱️</span>
+                    <span>Recent</span>
+                </div>
+                <div class="nav-item">
+                    <span>⭐</span>
+                    <span>Starred</span>
+                </div>
+                <div class="nav-item">
+                    <span>🗑️</span>
+                    <span>Trash</span>
+                </div>
+            </div>
+            
+            <div class="main-content">
+                <div class="content-header">
+                    <div class="content-title">My Drive</div>
+                    <div class="view-options">
+                        <button class="icon-btn">⋮</button>
+                        <button class="icon-btn">☰</button>
+                    </div>
+                </div>
+                
+                <div class="file-list">
+                    <div class="file-row">
+                        <div class="file-icon">📊</div>
+                        <div class="file-name">Q3 Marketing Analytics</div>
+                        <div class="file-owner">me</div>
+                        <div class="file-modified">Oct 28, 2024</div>
+                        <div class="file-size">2.4 MB</div>
+                    </div>
+                    <div class="file-row selected">
+                        <div class="file-icon">📄</div>
+                        <div class="file-name">Customer Contact Database - Nov 2024</div>
+                        <div class="file-owner">me</div>
+                        <div class="file-modified">Nov 15, 2024</div>
+                        <div class="file-size">8.7 MB</div>
+                    </div>
+                    <div class="file-row">
+                        <div class="file-icon">📁</div>
+                        <div class="file-name">Project Documents</div>
+                        <div class="file-owner">me</div>
+                        <div class="file-modified">Nov 10, 2024</div>
+                        <div class="file-size">—</div>
+                    </div>
+                    <div class="file-row">
+                        <div class="file-icon">📊</div>
+                        <div class="file-name">Sales Pipeline 2024</div>
+                        <div class="file-owner">me</div>
+                        <div class="file-modified">Nov 8, 2024</div>
+                        <div class="file-size">1.2 MB</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Share Dialog with Exposcope Guard -->
+    <div class="dialog-backdrop" id="shareDialog">
+        <div class="share-dialog">
+            <button class="close-btn" onclick="closeDialog()">×</button>
+            <div class="dialog-header">
+                <div class="dialog-title">Share "Customer Contact Database - Nov 2024"</div>
+                <div class="file-info">
+                    <span>📄 Spreadsheet</span>
+                    <span>•</span>
+                    <span>Owner: me</span>
+                    <span>•</span>
+                    <span>8.7 MB</span>
+                </div>
+            </div>
+            
+            <div class="dialog-body">
+                <div class="access-section">
+                    <div class="section-label">General Access</div>
+                    
+                    <div class="access-option" id="restrictedOption" onclick="selectAccessOption('restricted')">
+                        <div class="option-header">
+                            <div class="radio" id="restrictedRadio"></div>
+                            <div class="option-title">Restricted</div>
+                        </div>
+                        <div class="option-description">Only people with access can open with the link</div>
+                    </div>
+                    
+                    <div class="access-option selected" id="publicOption" onclick="selectAccessOption('public')">
+                        <div class="option-header">
+                            <div class="radio checked" id="publicRadio"></div>
+                            <div class="option-title">Anyone with the link</div>
+                        </div>
+                        <div class="option-description">Anyone on the internet with the link can view</div>
+                        
+                        <!-- Exposcope Guard Card -->
+                        <div class="guard-card" id="guardCard">
+                            <div class="guard-header">
+                                <div class="shield-warning">🛡️</div>
+                                <div class="guard-content">
+                                    <div class="guard-title">PII Detected in File</div>
+                                    <div class="guard-message">
+                                        This file contains sensitive personal information. Sharing it publicly could violate data protection policies and expose customer data.
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="findings-box">
+                                <div class="findings-title">What we found:</div>
+                                <div class="finding-item">
+                                    <div class="finding-icon">📧</div>
+                                    <span><strong>247 email addresses</strong> detected</span>
+                                </div>
+                                <div class="finding-item">
+                                    <div class="finding-icon">📱</div>
+                                    <span><strong>189 phone numbers</strong> detected</span>
+                                </div>
+                                <div class="finding-item">
+                                    <div class="finding-icon">💳</div>
+                                    <span><strong>12 PAN patterns</strong> (Luhn validated)</span>
+                                </div>
+                            </div>
+                            
+                            <div class="guard-actions">
+                                <button class="guard-btn guard-btn-primary" onclick="restrictAccess()">
+                                    🔒 Restrict Access (Recommended)
+                                </button>
+                                <button class="guard-btn guard-btn-secondary" onclick="viewPreview()">
+                                    👁️ View Sanitized Preview
+                                </button>
+                            </div>
+                            
+                            <a class="why-link" onclick="showPolicyInfo()">Why is this important? Learn about data protection policies →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dialog-footer">
+                <button class="copy-link-btn" onclick="copyLink()">Copy link</button>
+                <div class="action-buttons">
+                    <button class="dialog-btn dialog-btn-cancel" onclick="closeDialog()">Cancel</button>
+                    <button class="dialog-btn dialog-btn-done" onclick="doneSharing()">Done</button>
+                </div>
+            </div>
+            
+            <div class="exposcope-footer">
+                <svg class="shield-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3z"/>
+                </svg>
+                <span>Protected by Exposcope • Policy check completed in 180ms</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Success Toast -->
+    <div id="successToast" class="success-toast hidden">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <path d="M20 6L9 17l-5-5"/>
+        </svg>
+        <span id="toastMessage">Access restricted successfully!</span>
+    </div>
+    
+    <script>
+        let currentAccess = 'public';
+        
+        // Get elements
+        const shareDialog = document.getElementById('shareDialog');
+        const guardCard = document.getElementById('guardCard');
+        const restrictedOption = document.getElementById('restrictedOption');
+        const publicOption = document.getElementById('publicOption');
+        const restrictedRadio = document.getElementById('restrictedRadio');
+        const publicRadio = document.getElementById('publicRadio');
+        const successToast = document.getElementById('successToast');
+        const toastMessage = document.getElementById('toastMessage');
+        
+        // Select access option
+        function selectAccessOption(option) {
+            currentAccess = option;
+            
+            if (option === 'restricted') {
+                // Update UI
+                restrictedOption.classList.add('selected');
+                publicOption.classList.remove('selected');
+                restrictedRadio.classList.add('checked');
+                publicRadio.classList.remove('checked');
+                guardCard.classList.add('hidden');
+            } else if (option === 'public') {
+                // Update UI
+                publicOption.classList.add('selected');
+                restrictedOption.classList.remove('selected');
+                publicRadio.classList.add('checked');
+                restrictedRadio.classList.remove('checked');
+                guardCard.classList.remove('hidden');
+            }
+        }
+        
+        // Restrict access (called from guard button)
+        function restrictAccess() {
+            selectAccessOption('restricted');
+            showToast('Access restricted to specific people. File is now protected.');
+        }
+        
+        // View sanitized preview
+        function viewPreview() {
+            showToast('Opening sanitized preview with PII redacted...');
+            setTimeout(() => {
+                alert('Preview Feature:\n\nThis would open a version of the file with all PII automatically redacted:\n\n• 247 emails → [EMAIL_REDACTED]\n• 189 phones → [PHONE_REDACTED]\n• 12 PANs → [PAN_REDACTED]\n\nYou can review the content safely without exposing sensitive data.');
+            }, 500);
+        }
+        
+        // Show policy information
+        function showPolicyInfo() {
+            alert('Data Protection Policy:\n\n✓ GDPR Compliance: Personal data must not be publicly accessible\n✓ Company Policy: Customer PII requires restricted access\n✓ Audit Trail: All sharing decisions are logged\n✓ Best Practice: Use "Specific people" for files with sensitive data\n\nExposcope helps you stay compliant automatically.');
+        }
+        
+        // Copy link
+        function copyLink() {
+            const linkText = 'https://drive.google.com/file/d/1abc...xyz/view';
+            navigator.clipboard.writeText(linkText).then(() => {
+                showToast('Link copied to clipboard!');
+            }).catch(() => {
+                showToast('Link: ' + linkText);
+            });
+        }
+        
+        // Close dialog
+        function closeDialog() {
+            shareDialog.classList.add('hidden');
+        }
+        
+        // Done sharing
+        function doneSharing() {
+            if (currentAccess === 'public') {
+                showToast('Warning: File shared publicly with PII detected. Consider restricting access.');
+            } else {
+                showToast('File sharing settings saved. Access restricted to specific people.');
+            }
+            setTimeout(() => {
+                closeDialog();
+            }, 2000);
+        }
+        
+        // Show toast
+        function showToast(message) {
+            toastMessage.textContent = message;
+            successToast.classList.remove('hidden');
+            setTimeout(() => {
+                successToast.classList.add('hidden');
+            }, 3000);
+        }
+        
+        // Close dialog when clicking backdrop
+        shareDialog.addEventListener('click', (e) => {
+            if (e.target === shareDialog) {
+                closeDialog();
+            }
+        });
+        
+        // Make file rows clickable to open share dialog
+        document.querySelectorAll('.file-row').forEach((row, index) => {
+            if (index === 1) { // The selected row
+                row.addEventListener('dblclick', () => {
+                    shareDialog.classList.remove('hidden');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

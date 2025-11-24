@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exposcope Deliverable 3 - Screen Mockups</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 60px;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .subtitle {
+            font-size: 20px;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+        
+        .screens-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+        
+        .screen-card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .screen-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .screen-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .screen-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 12px;
+        }
+        
+        .screen-description {
+            font-size: 16px;
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        
+        .screen-features {
+            list-style: none;
+            margin-bottom: 24px;
+        }
+        
+        .screen-features li {
+            padding: 8px 0;
+            color: #2d3748;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .check-icon {
+            width: 20px;
+            height: 20px;
+            background: #10a37f;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        
+        .view-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+        
+        .view-btn:hover {
+            transform: scale(1.02);
+        }
+        
+        .info-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .info-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 16px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        
+        .info-card {
+            text-align: center;
+        }
+        
+        .info-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 12px;
+        }
+        
+        .info-label {
+            font-size: 14px;
+            color: #718096;
+            margin-bottom: 4px;
+        }
+        
+        .info-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+        
+        @media (max-width: 768px) {
+            .screens-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🛡️</div>
+            <h1>Exposcope</h1>
+            <p class="subtitle">Deliverable 3 - MVP Screen Mockups • <a href="demo-guide.html" style="color: white; text-decoration: underline;">View Interactive Demo Guide →</a></p>
+        </div>
+        
+        <div class="screens-grid">
+            <a href="screen1-llm-intercept.html" class="screen-card">
+                <div class="screen-number">SCREEN 1 • INTERACTIVE</div>
+                <h2 class="screen-title">LLM Intercept</h2>
+                <p class="screen-description">
+                    Browser extension overlay that catches PII and secrets before prompts are sent to ChatGPT, DeepSeek, or Gemini.
+                </p>
+                <ul class="screen-features">
+                    <li>
+                        <span class="check-icon">✓</span>
+                        <span>Real-time PII detection (~150ms)</span>
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        <span>Auto-anonymization & masking</span>
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        <span>Email, PAN, IBAN, AWS keys</span>
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        <span>Editable text • Clickable buttons</span>
+                    </li>
+                </ul>
+                <button class="view-btn">View Screen 1 →</button>
+            </a>
+            
+            <a href="screen2-drive-share-guard.html" class="screen-card">
+                <div class="screen-number">SCREEN 2 • INTERACTIVE</div>
+                <h2 class="screen-title">Drive Share Guard</h2>
+                <p class="screen-description">
+                    Google Drive integration that prevents "Anyone with link" exposure on files containing sensitive data.
+                </p>
+                <ul class="screen-features">
+                    <li>
+                        <span class="check-icon">✓</span>
+                        <span>Intercepts public sharing attempts</span>
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        <span>Shows PII findings breakdown</span>
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        <span>One-click access restriction</span>
+                    </li>
+                    <li>
+                        <span class="check-icon">✓</span>
+                        <span>Selectable radios • Smart guard card</span>
+                    </li>
+                </ul>
+                <button class="view-btn">View Screen 2 →</button>
+            </a>
+        </div>
+        
+        <div class="info-section">
+            <h3 class="info-title">MVP Acceptance Targets</h3>
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">🎯</div>
+                    <div class="info-label">Recall Rate</div>
+                    <div class="info-value">≥ 90%</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">⚡</div>
+                    <div class="info-label">Decision Time (p95)</div>
+                    <div class="info-value">≤ 300ms</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">👍</div>
+                    <div class="info-label">User CSAT</div>
+                    <div class="info-value">≥ 80%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
