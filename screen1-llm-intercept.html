@@ -485,9 +485,129 @@
                 opacity: 1;
             }
         }
+        
+        /* Fullscreen Prompt Modal */
+        .fullscreen-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .fullscreen-modal.hidden {
+            display: none;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .fullscreen-card {
+            background: white;
+            border-radius: 20px;
+            padding: 48px;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: scaleIn 0.3s ease-out;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .fullscreen-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        
+        .fullscreen-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 12px;
+        }
+        
+        .fullscreen-description {
+            font-size: 16px;
+            color: #718096;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+        
+        .fullscreen-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .fullscreen-btn {
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .fullscreen-btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .fullscreen-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+        
+        .fullscreen-btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .fullscreen-btn-secondary:hover {
+            background: #edf2f7;
+        }
+        
+        .fullscreen-tip {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #a0aec0;
+        }
     </style>
 </head>
 <body>
+    <!-- Browser Chrome -->
     <div class="browser-chrome">
         <div class="browser-dots">
             <div class="dot red"></div>
@@ -497,6 +617,30 @@
         <div class="url-bar">https://chat.openai.com/</div>
     </div>
     
+    <!-- Fullscreen Prompt Modal -->
+    <div class="fullscreen-modal" id="fullscreenModal">
+        <div class="fullscreen-card">
+            <div class="fullscreen-icon">🖥️</div>
+            <div class="fullscreen-title">Better Experience</div>
+            <div class="fullscreen-description">
+                For the best demo experience, would you like to enter fullscreen mode? 
+                This will hide your browser UI and make the mockup look more realistic.
+            </div>
+            <div class="fullscreen-buttons">
+                <button class="fullscreen-btn fullscreen-btn-primary" onclick="enterFullscreen()">
+                    ✨ Yes, Go Fullscreen
+                </button>
+                <button class="fullscreen-btn fullscreen-btn-secondary" onclick="skipFullscreen()">
+                    No Thanks
+                </button>
+            </div>
+            <div class="fullscreen-tip">
+                💡 Tip: Press ESC anytime to exit fullscreen
+            </div>
+        </div>
+    </div>
+    
+    <!-- ChatGPT Interface -->
     <div class="chatgpt-wrapper">
         <div class="chatgpt-header">
             <div class="chatgpt-logo">
@@ -540,6 +684,7 @@
         </div>
     </div>
     
+    <!-- Exposcope Overlay -->
     <div class="overlay-backdrop">
         <div class="exposcope-modal">
             <button class="close-btn" onclick="closeOverlay()">×</button>
@@ -564,7 +709,7 @@
                         <div class="item-icon">📧</div>
                         <div class="item-content">
                             <div class="item-label">Email Addresses (2)</div>
-                            <div class="item-value">sohaib.••••@••••••••.com, maj••••d@••••••••.io</div>
+                            <div class="item-value">sohaib.••@••••••••.com, majid@••••••••.io</div>
                         </div>
                     </div>
                     
@@ -634,6 +779,7 @@
         </div>
     </div>
     
+    <!-- Success Toast -->
     <div id="successToast" class="success-toast hidden">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
             <path d="M20 6L9 17l-5-5"/>
@@ -642,16 +788,51 @@
     </div>
     
     <script>
+        // Fullscreen Modal Management
+        const fullscreenModal = document.getElementById('fullscreenModal');
+        
+        // Enter fullscreen
+        function enterFullscreen() {
+            const elem = document.documentElement;
+            
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+            
+            fullscreenModal.classList.add('hidden');
+        }
+        
+        // Skip fullscreen
+        function skipFullscreen() {
+            fullscreenModal.classList.add('hidden');
+        }
+        
+        // Listen for ESC key to show a subtle reminder
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                // User exited fullscreen
+                console.log('Exited fullscreen mode');
+            }
+        });
+        
+        // Get elements
         const overlay = document.querySelector('.overlay-backdrop');
         const inputBox = document.querySelector('.input-box');
         const sendBtn = document.querySelector('.send-btn');
         const successToast = document.getElementById('successToast');
         const toastMessage = document.getElementById('toastMessage');
         
-        const piiPrompt = `Here's our Q3 data: sohaib.arif@concordia.com churned after complaint. Majid (majid@techstart.io) cited pricing. Account 4532-1167-8901-2345 closed due to poor service. Contact: +1-555-0123 for follow-up. AWS key: AKIAIOSFODNN7EXAMPLE`;
+        // Original prompt with PII
+        const piiPrompt = `Here's our Q3 data: sohaib.arif@concordia.com churned after complaint. Abdul Majid (majid@techstart.io) cited pricing. Account 4532-1167-8901-2345 closed due to poor service. Contact: +1-555-0123 for follow-up. AWS key: AKIAIOSFODNN7EXAMPLE`;
         
-        const anonymizedPrompt = `Here's our Q3 data: [EMAIL_1] churned after complaint. Majid ([EMAIL_2]) cited pricing. Account [PAN_REDACTED] closed due to poor service. Contact: [PHONE_REDACTED] for follow-up. AWS key: [AWS_KEY_REDACTED]`;
+        // Anonymized version
+        const anonymizedPrompt = `Here's our Q3 data: [EMAIL_1] churned after complaint. Abdul Majid ([EMAIL_2]) cited pricing. Account [PAN_REDACTED] closed due to poor service. Contact: [PHONE_REDACTED] for follow-up. AWS key: [AWS_KEY_REDACTED]`;
         
+        // Check if prompt contains PII (simple check)
         function containsPII(text) {
             const emailRegex = /@/;
             const phoneRegex = /\+?\d{1,3}[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
@@ -662,14 +843,17 @@
                    cardRegex.test(text) || awsRegex.test(text);
         }
         
+        // Show overlay
         function showOverlay() {
             overlay.classList.remove('hidden');
         }
         
+        // Close overlay
         function closeOverlay() {
             overlay.classList.add('hidden');
         }
         
+        // Show toast
         function showToast(message) {
             toastMessage.textContent = message;
             successToast.classList.remove('hidden');
@@ -678,17 +862,20 @@
             }, 3000);
         }
         
+        // Auto-anonymize and send
         function autoAnonymize() {
             inputBox.value = anonymizedPrompt;
             closeOverlay();
             showToast('Prompt anonymized and sent successfully!');
             
+            // Simulate sending message
             setTimeout(() => {
                 addChatMessage('user', anonymizedPrompt);
                 inputBox.value = '';
             }, 500);
         }
         
+        // Mask secrets only
         function maskSecrets() {
             const maskedPrompt = inputBox.value
                 .replace(/AKIA[0-9A-Z]{16}/g, '[AWS_KEY_REDACTED]')
@@ -699,11 +886,13 @@
             showToast('Secrets masked successfully!');
         }
         
+        // Cancel and edit
         function cancelEdit() {
             closeOverlay();
             inputBox.focus();
         }
         
+        // Add message to chat
         function addChatMessage(role, content) {
             const chatArea = document.querySelector('.chat-area');
             const messageDiv = document.createElement('div');
@@ -723,6 +912,7 @@
             chatArea.scrollTop = chatArea.scrollHeight;
         }
         
+        // Send button click handler
         sendBtn.addEventListener('click', (e) => {
             e.preventDefault();
             const text = inputBox.value.trim();
@@ -738,6 +928,7 @@
             }
         });
         
+        // Enter key handler
         inputBox.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -745,16 +936,19 @@
             }
         });
         
+        // Close overlay when clicking backdrop
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) {
                 closeOverlay();
             }
         });
         
+        // Add button event listeners
         document.querySelector('.btn-primary').addEventListener('click', autoAnonymize);
         document.querySelectorAll('.btn-secondary')[0].addEventListener('click', maskSecrets);
         document.querySelector('.btn-danger').addEventListener('click', cancelEdit);
         
+        // Initialize with PII prompt
         inputBox.value = piiPrompt;
     </script>
 </body>

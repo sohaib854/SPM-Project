@@ -659,6 +659,125 @@
                 opacity: 1;
             }
         }
+        
+        /* Fullscreen Prompt Modal */
+        .fullscreen-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .fullscreen-modal.hidden {
+            display: none;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .fullscreen-card {
+            background: white;
+            border-radius: 20px;
+            padding: 48px;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: scaleIn 0.3s ease-out;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .fullscreen-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        
+        .fullscreen-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 12px;
+        }
+        
+        .fullscreen-description {
+            font-size: 16px;
+            color: #718096;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+        
+        .fullscreen-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .fullscreen-btn {
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .fullscreen-btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .fullscreen-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+        
+        .fullscreen-btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .fullscreen-btn-secondary:hover {
+            background: #edf2f7;
+        }
+        
+        .fullscreen-tip {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #a0aec0;
+        }
     </style>
 </head>
 <body>
@@ -670,6 +789,29 @@
             <div class="dot green"></div>
         </div>
         <div class="url-bar">https://drive.google.com/drive/my-drive</div>
+    </div>
+    
+    <!-- Fullscreen Prompt Modal -->
+    <div class="fullscreen-modal" id="fullscreenModal">
+        <div class="fullscreen-card">
+            <div class="fullscreen-icon">🖥️</div>
+            <div class="fullscreen-title">Better Experience</div>
+            <div class="fullscreen-description">
+                For the best demo experience, would you like to enter fullscreen mode? 
+                This will hide your browser UI and make the mockup look more realistic.
+            </div>
+            <div class="fullscreen-buttons">
+                <button class="fullscreen-btn fullscreen-btn-primary" onclick="enterFullscreen()">
+                    ✨ Yes, Go Fullscreen
+                </button>
+                <button class="fullscreen-btn fullscreen-btn-secondary" onclick="skipFullscreen()">
+                    No Thanks
+                </button>
+            </div>
+            <div class="fullscreen-tip">
+                💡 Tip: Press ESC anytime to exit fullscreen
+            </div>
+        </div>
     </div>
     
     <!-- Google Drive Interface -->
@@ -868,6 +1010,37 @@
     </div>
     
     <script>
+        // Fullscreen Modal Management
+        const fullscreenModal = document.getElementById('fullscreenModal');
+        
+        // Enter fullscreen
+        function enterFullscreen() {
+            const elem = document.documentElement;
+            
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
+            }
+            
+            fullscreenModal.classList.add('hidden');
+        }
+        
+        // Skip fullscreen
+        function skipFullscreen() {
+            fullscreenModal.classList.add('hidden');
+        }
+        
+        // Listen for ESC key to show a subtle reminder
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                // User exited fullscreen
+                console.log('Exited fullscreen mode');
+            }
+        });
+        
         let currentAccess = 'public';
         
         // Get elements
